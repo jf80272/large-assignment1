@@ -37,7 +37,7 @@ public class Playlist {
 	public ArrayList<String> getList() {
 		ArrayList<String> s = new ArrayList<String>();
 		for (Song song : this.songs) {
-			s.add(song.getTitle());
+			s.add(song.toString());
 		}
 		return s;
 	}
