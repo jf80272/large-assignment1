@@ -7,7 +7,19 @@ public class Song {
 	private final String albumName;
 	private boolean favorite;
 	private int rating;
-	
+
+	public enum Rate {
+		ONE(1), TWO(2), THREE(3), FOUR(4), FIVE(5);
+		private int value;
+		
+		Rate(int value) {
+			this.value = value;
+		}
+		
+		public int getValue() {
+			return value;
+		}
+	}
 	
 	/* CONSTRUCTORS */
 	public Song(String title, String artist, String albumName) {
@@ -20,7 +32,7 @@ public class Song {
 	/* METHODS */
 	
 	/* SETTERS */
-	public void setRating(int rate) {
+	public void setRating(Rate rate) {
 		this.rating = rate;
 	}
 	
@@ -45,7 +57,7 @@ public class Song {
 		return this.favorite;
 	}
 	
-	public int getRating() {
+	public Rate getRating() {
 		return this.rating;
 	}
 	
