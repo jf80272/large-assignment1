@@ -1,0 +1,58 @@
+package model;
+
+public class Song {
+	/* INSTANCE VARIABLES */
+	private final String title;
+	private final String artist;
+	private final String albumName;
+	private boolean favorite;
+	private int rating;
+	
+	
+	/* CONSTRUCTORS */
+	public Song(String title, String artist, String albumName) {
+		this.title = title;
+		this.artist = artist;
+		this.favorite = false;
+		this.albumName = albumName;
+	}
+	
+	/* METHODS */
+	
+	/* SETTERS */
+	public void setRating(int rate) {
+		this.rating = rate;
+	}
+	
+	public void setFav(boolean fav) {
+		this.favorite = fav;
+	}
+	
+	/* GETTERS */
+	public String getTitle() {
+		return this.title;
+	}
+	
+	public String getArtist() {
+		return this.artist;
+	}
+	
+	public String getAlbum() {
+		return this.albumName;
+	}
+	
+	public boolean isFav() {
+		return this.favorite;
+	}
+	
+	public int getRating() {
+		return this.rating;
+	}
+	
+	// To String method
+	public String toString() {
+		return this.title + " " + this.artist + " " + this.albumName;
+	}
+	
+	
+}
