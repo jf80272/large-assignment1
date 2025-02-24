@@ -22,9 +22,11 @@ public class Playlist {
 	}
 	
 	public void rmSong(Song song) {
-		for (Song s : this.songs) {
-			if (s.toString().equals(song.toString())) {
-				this.songs.remove(s);
+		for (int i = 0; i < this.songs.size(); i++) {
+			Song s = this.songs.get(i);
+			if (s.getTitle() == song.getTitle() 
+					&& s.getArtist() == song.getArtist()) {
+				this.songs.remove(i);
 			}
 		}
 	}
