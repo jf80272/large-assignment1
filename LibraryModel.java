@@ -7,11 +7,6 @@ public class LibraryModel {
 	private ArrayList<Album> albumList;
 	private ArrayList<Song> songList;
 	private ArrayList<Playlist> playlistList;
-
-	/* INSTANCE VAIRBALE */
-	private ArrayList<Album> albumList;
-	private ArrayList<Song> songList;
-	private ArrayList<Playlist> playlistList;
 	
 	/* CONSTRUCTORS */
 	public LibraryModel() {
@@ -97,9 +92,21 @@ public class LibraryModel {
 			if (s.getTitle() == song.getTitle() &&
 					s.getArtist() == song.getArtist()) {
 				s.setRating(rate);
+				
+				// Add statement to mark song as favorite if rating is 5
 			}
 		}
 	}
+	
+	public void setFav(Song song) {
+		for (Song s : songList) {
+			if (s.getTitle() == song.getTitle() &&
+					s.getArtist() == song.getArtist()) {
+				s.setFav(true);
+			}
+		}
+	}
+	
 	/* GETTERS */
 	// List of albums
 	public ArrayList<String> getAlbumList() {
