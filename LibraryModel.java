@@ -53,19 +53,7 @@ public class LibraryModel {
 
 	// Create a playlist
 	public void createPlaylist(String name) {
-		if (!this.containsPlaylist(name)) {
-			this.playlistList.add(new Playlist(name));
-		}
-	}
-
-	// private contains method that checks if a playlist name is in playlistList
-	private boolean containsPlaylist(String name) {
-		for (Playlist playlist : this.playlistList) {
-			if (playlist.getName() == name) {
-				return true;
-			}
-		}
-		return false;
+		this.playlistList.add(new Playlist(name));
 	}
 
 	// Add a song to a playlist
