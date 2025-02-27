@@ -6,7 +6,7 @@ public class Song {
 	private final String artist;
 	private final String albumName;
 	private boolean favorite;
-	private int rating;
+	private Rate rating;
 
 	public enum Rate {
 		ONE(1), TWO(2), THREE(3), FOUR(4), FIVE(5);
