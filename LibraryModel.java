@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
+import model.Song.Rate;
+
 public class LibraryModel {
 	/* INSTANCE VAIRBALE */
 	private ArrayList<Album> albumList;
@@ -87,13 +89,76 @@ public class LibraryModel {
 		}
 	}
 	
+	// Search for a song by title
+	public ArrayList<Song> findSongByTitle(String title) {
+		ArrayList<Song> songs = new ArrayList<>();
+		for (Song s : songList) {
+			if (s.getTitle().equals(title)) {
+				songs.add(s);
+			}
+		}
+		
+		return songs;
+	}
+	
+	// Search for a song by artist
+	public ArrayList<Song> findSongByArtist(String artist) {
+		ArrayList<Song> songs = new ArrayList<>();
+		for (Song s : songList) {
+			if (s.getArtist().equals(artist)) {
+				songs.add(s);
+			}
+		}
+		
+		return songs;
+	}
+	
+	// Search for an album by title
+	public ArrayList<Album> findAlbumByTitle(String title) {
+		ArrayList<Album> albums = new ArrayList<>();
+		for (Album a : albumList) {
+			if (a.getTitle().equals(title)) {
+				albums.add(a);
+			}
+		}
+		
+		return albums;
+	}
+	
+	// Search for an album by artist
+	public ArrayList<Album> findAlbumByArtist(String artist) {
+		ArrayList<Album> albums = new ArrayList<>();
+		for (Album a : albumList) {
+			if (a.getArtist().equals(artist)) {
+				albums.add(a);
+			}
+		}
+		
+		return albums;
+	}
+	
+	// Search for a playlist by name
+	public ArrayList<Playlist> findPlaylist(String name) {
+		ArrayList<Playlist> playlists = new ArrayList<>();
+		for (Playlist p : playlistList) {
+			if (p.getName().equals(name)) {
+				playlists.add(p);
+			}
+		}
+		
+		return playlists;
+	}
+	
 	public void rateSong(Song song , Rate rate) {
 		for (Song s : this.songList) {
 			if (s.getTitle() == song.getTitle() &&
 					s.getArtist() == song.getArtist()) {
 				s.setRating(rate);
 				
-				// Add statement to mark song as favorite if rating is 5
+				// If the rating is 5, marks the song as favorite
+				if (rate.getValue() == 5) {
+					s.setFav(true);
+				}
 			}
 		}
 	}
