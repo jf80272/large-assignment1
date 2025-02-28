@@ -9,14 +9,16 @@ import model.Album;
 import model.Song;
 
 public class MusicStore {
-	private ArrayList<Album> albums;
+	private ArrayList<Album> albumList;
 	
-	public MusicStore() {
-		albums = new ArrayList<>();
-		addAlbums("albums/albums.txt");
+	/* CONSTRUCTOR */
+	public MusicStore(String fileName) {
+		albumList = new ArrayList<>();
+		addAlbums(fileName);
 		printAlbums();
 	}
 	
+	/* METHODS */	
 	// Adds albums from the albums file to the list of albums
 	private void addAlbums(String fileName) {
 		BufferedReader reader;
@@ -53,12 +55,12 @@ public class MusicStore {
 			// Reading other lines to make a song list
 			ArrayList<Song> songs = new ArrayList<>();
 			while (line != null) {
-				songs.add(new Song(line, albumInfo[0], albumInfo[1]));
+				songs.add(new Song(line, albumInfo[1], albumInfo[0]));
 				line = reader.readLine();
 			}
 			
 			// Add album to list of albums
-			albums.add(new Album(albumInfo[0], albumInfo[1], albumInfo[2], Integer.parseInt(albumInfo[3]), songs));
+			albumList.add(new Album(albumInfo[0], albumInfo[1], albumInfo[2], Integer.parseInt(albumInfo[3]), songs));
 			
 			reader.close();
 		} catch (IOException e) {
@@ -66,11 +68,63 @@ public class MusicStore {
 		}
 	}
 	
-	// for testing
-	public void printAlbums() {
-		for (Album a : albums) {
-			a.printAlbum();
-			System.out.println();
+	// Search for a song by title
+	public ArrayList<Song> findSongByTitle(String title) {
+		ArrayList<Song> songs = new ArrayList<>();
+		for (Album a : albumList) {
+			for (Song s : a.getSongList()) {
+				if (s.getTitle().equals(title)) {
+					songs.add(s);
+				}
+			}
 		}
+		
+		return songs;
 	}
+
+	// Search for a song by artist
+	public ArrayList<Song> findSongByArtist(String artist) {
+		ArrayList<Song> songs = new ArrayList<>();
+		for (Album a : albumList) {
+			for (Song s : a.getSongList()) {
+				if (s.getArtist().equals(artist)) {
+					songs.add(s);
+				}
+			}
+		}
+		
+		return songs;
+	}
+	
+	// Search for an album by title
+	public ArrayList<Album> findAlbumByTitle(String title) {
+		ArrayList<Album> albums = new ArrayList<>();
+		for (Album a : albumList) {
+			if (a.getTitle().equals(title)) {
+				albums.add(a);
+			}
+		}
+		
+		return albums;
+	}
+	
+	// Search for an album by artist
+	public ArrayList<Album> findAlbumByArtist(String artist) {
+		ArrayList<Album> albums = new ArrayList<>();
+		for (Album a : albumList) {
+			if (a.getArtist().equals(artist)) {
+				albums.add(a);
+			}
+		}
+		
+		return albums;
+	}
+	
+	// for testing
+		public void printAlbums() {
+			for (Album a : albumList) {
+				a.printAlbum();
+				System.out.println();
+			}
+		}
 }
