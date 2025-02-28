@@ -37,28 +37,14 @@ public class LibraryModel {
 				this.songList.add(song);
 			}
 		}
-		if (!containsAlbum(al)) {
-			this.albumList.add(al);
-		}
-		
-	}
-	
-	// Private contains methods to see if album is already in albumlist
-	private boolean containsAlbum(Album album) {
-		for (Album a : this.albumList) {
-			if (a.getTitle() == album.getTitle() &&
-					a.getArtist() == album.getArtist()) {
-				return true;
-			}
-		}
-		return false;
+		this.albumList.add(al);
 	}
 
-	// Private contains method to see if song is in songList
-	private boolean containsSong(Song song) {
+	// Checks if song is in songList
+	public boolean containsSong(Song song) {
 		for (Song s : this.songList) {
-			if (s.getTitle() == song.getTitle() &&
-					s.getArtist() == song.getArtist()) {
+			if (s.getTitle().equals(song.getTitle()) &&
+					s.getArtist().equals(song.getArtist())) {
 				return true;
 			}
 		}
@@ -67,7 +53,19 @@ public class LibraryModel {
 
 	// Create a playlist
 	public void createPlaylist(String name) {
-		this.playlistList.add(new Playlist(name));
+		if (!this.containsPlaylist(name)) {
+			this.playlistList.add(new Playlist(name));
+		}
+	}
+
+	// Checks if a playlist name is in playlistList
+	public boolean containsPlaylist(String name) {
+		for (Playlist playlist : this.playlistList) {
+			if (playlist.getName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// Add a song to a playlist
@@ -140,15 +138,13 @@ public class LibraryModel {
 	}
 	
 	// Search for a playlist by name
-	public ArrayList<Playlist> findPlaylist(String name) {
-		ArrayList<Playlist> playlists = new ArrayList<>();
+	public Playlist findPlaylist(String name) {
 		for (Playlist p : playlistList) {
 			if (p.getName().equals(name)) {
-				playlists.add(p);
+				return p;
 			}
 		}
-		
-		return playlists;
+		return null;
 	}
 	
 	public void rateSong(Song song , Rate rate) {
