@@ -79,12 +79,12 @@ public class MusicSim {
         		System.out.print("Enter the name of an artist: ");
         		String artist4 = scanner.nextLine().trim();
         		System.out.println();
-        		ArrayList<Album> albums4 = ms.findAlbumByTitle(artist4);
+        		ArrayList<Album> albums4 = ms.findAlbumByArtist(artist4);
         		if (!albums4.isEmpty()) {
         			for (Album a : albums4) {
         				System.out.println(a);
+        				System.out.println();
         			}
-        			System.out.println();
         		} else {
         			System.out.println("No such album exists in the database.\n");
         		}
@@ -150,7 +150,7 @@ public class MusicSim {
         		System.out.print("Enter the name of an artist: ");
         		String artist4 = scanner.nextLine().trim();
         		System.out.println();
-        		ArrayList<Album> albums4 = ms.findAlbumByTitle(artist4);
+        		ArrayList<Album> albums4 = ms.findAlbumByArtist(artist4);
         		if (!albums4.isEmpty()) {
         			for (Album a : albums4) {
         				System.out.println(a);
@@ -405,6 +405,7 @@ public class MusicSim {
 			System.out.println("Song was unable to be rated.\n");
 		}
 	}
+	
 	private Rate intToRate(int rate) {
 		if (rate == 1) {
 			return Rate.ONE;
