@@ -111,52 +111,52 @@ public class MusicSim {
         		System.out.print("Enter song title: ");
         		String title1 = scanner.nextLine().trim();
         		System.out.println();
-        		ArrayList<Song> songs1 = ms.findSongByTitle(title1);
+        		ArrayList<Song> songs1 = userLibrary.findSongByTitle(title1);
         		if (!songs1.isEmpty()) {
         			for (Song s : songs1) {
         				System.out.println(s);
         			}
         		} else {
-        			System.out.println("No such song exists in the database.\n");
+        			System.out.println("No such song exists in the library.\n");
         		}
         		break;
         	case "2":
         		System.out.print("Enter the name of an artist: ");
         		String artist2 = scanner.nextLine().trim();
         		System.out.println();
-        		ArrayList<Song> songs2 = ms.findSongByArtist(artist2);
+        		ArrayList<Song> songs2 = userLibrary.findSongByArtist(artist2);
         		if (!songs2.isEmpty()) {
         			for (Song s : songs2) {
         				System.out.println(s);
         			}
         		} else {
-        			System.out.println("No such song exists in the database.\n");
+        			System.out.println("No such song exists in the library.\n");
         		}
         		break;
         	case "3":
         		System.out.print("Enter album title: ");
         		String title3 = scanner.nextLine().trim();
         		System.out.println();
-        		ArrayList<Album> albums3 = ms.findAlbumByTitle(title3);
+        		ArrayList<Album> albums3 = userLibrary.findAlbumByTitle(title3);
         		if (!albums3.isEmpty()) {
         			for (Album a : albums3) {
         				System.out.println(a);
         			}
         		} else {
-        			System.out.println("No such album exists in the database.\n");
+        			System.out.println("No such album exists in the library.\n");
         		}
         		break;
         	case  "4":
         		System.out.print("Enter the name of an artist: ");
         		String artist4 = scanner.nextLine().trim();
         		System.out.println();
-        		ArrayList<Album> albums4 = ms.findAlbumByArtist(artist4);
+        		ArrayList<Album> albums4 = userLibrary.findAlbumByArtist(artist4);
         		if (!albums4.isEmpty()) {
         			for (Album a : albums4) {
         				System.out.println(a);
         			}
         		} else {
-        			System.out.println("No such album exists in the database.\n");
+        			System.out.println("No such album exists in the library.\n");
         		}
         		break;
         	case "5":
@@ -364,6 +364,7 @@ public class MusicSim {
 		ArrayList<Song> songs = userLibrary.findSongByTitle(sTitle);
 		if (!songs.isEmpty()) {
 			for (Song s : songs) {
+				System.out.println(s.getAlbum());
 				if (s.getAlbum().equals(aTitle)) {
 					s.setFav(true);
 					System.out.println("Marked the following song as favorite: ");
@@ -392,9 +393,10 @@ public class MusicSim {
 				rating = Integer.parseInt(scanner.nextLine().trim());
 				r = intToRate(rating);
 			}
+			
 			for (Song s : songs) {
 				if (s.getAlbum().equals(aTitle)) {
-					 s.setRating(r);
+					 userLibrary.rateSong(s, r);;
 					
 					System.out.println("Rated the following song: ");
 					System.out.println(s);
