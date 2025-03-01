@@ -21,7 +21,7 @@ public class LibraryModel {
 	// Add Song to songList
 	public void addToSongList(Song song) {
 		if (!this.containsSong(song)) {
-			Song s = new Song(song.getTitle(), song.getArtist(), song.getArtist());
+			Song s = new Song(song.getTitle(), song.getArtist(), song.getAlbum());
 			s.setRating(song.getRating());
 			s.setFav(song.isFav());
 			this.songList.add(s);
