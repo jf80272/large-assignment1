@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class Album {
 	/* INSTANCE VARIABLES */
-	private String title;
-	private String artist;
-	private String genre;
-	private int year;
-	private ArrayList<Song> songList;
+	private final String title;
+	private final String artist;
+	private final String genre;
+	private final int year;
+	private final ArrayList<Song> songList;
 	
 	/* CONSTRUCTORS */
 	public Album(String title, String artist, String genre, int year, ArrayList<Song> songs) {
