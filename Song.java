@@ -63,7 +63,7 @@ public class Song {
 	
 	// To String method
 	public String toString() {
-		return this.title + " " + this.artist + " " + this.albumName;
+		return this.title + " (" + this.albumName+ ", " + this.artist + ")";
 	}
 	
 	
