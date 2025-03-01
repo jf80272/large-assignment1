@@ -120,11 +120,4 @@ public class MusicStore {
 		return albums;
 	}
 	
-	// for testing
-		public void printAlbums() {
-			for (Album a : albumList) {
-				a.printAlbum();
-				System.out.println();
-			}
-		}
 }
