@@ -42,6 +42,7 @@ public class MusicSim {
         			for (Song s : songs1) {
         				System.out.println(s);
         			}
+        			System.out.println();
         		} else {
         			System.out.println("No such song exists in the database.\n");
         		}
@@ -55,6 +56,7 @@ public class MusicSim {
         			for (Song s : songs2) {
         				System.out.println(s);
         			}
+        			System.out.println();
         		} else {
         			System.out.println("No such song exists in the database.\n");
         		}
@@ -68,6 +70,7 @@ public class MusicSim {
         			for (Album a : albums3) {
         				System.out.println(a);
         			}
+        			System.out.println();
         		} else {
         			System.out.println("No such album exists in the database.\n");
         		}
@@ -81,6 +84,7 @@ public class MusicSim {
         			for (Album a : albums4) {
         				System.out.println(a);
         			}
+        			System.out.println();
         		} else {
         			System.out.println("No such album exists in the database.\n");
         		}
