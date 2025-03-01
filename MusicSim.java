@@ -381,10 +381,16 @@ public class MusicSim {
 		if (!songs.isEmpty()) {
 			System.out.print("Enter your rating: ");
 			int rating = Integer.parseInt(scanner.nextLine().trim());
-			
+			Rate r = intToRate(rating);
+			while (r == null) {
+				System.out.print("Rating is out of range. Try again: ");
+				rating = Integer.parseInt(scanner.nextLine().trim());
+				r = intToRate(rating);
+			}
 			for (Song s : songs) {
 				if (s.getAlbum().equals(aTitle)) {
-					// s.setRating(rating);
+					 s.setRating(r);
+					
 					System.out.println("Rated the following song: ");
 					System.out.println(s);
 					System.out.println();
@@ -392,6 +398,21 @@ public class MusicSim {
 			}
 		} else {
 			System.out.println("Song was unable to be rated.\n");
+		}
+	}
+	private Rate intToRate(int rate) {
+		if (rate == 1) {
+			return Rate.ONE;
+		} else if (rate == 2){
+			return Rate.TWO;
+		} else if (rate == 3) {
+			return Rate.THREE;
+		} else if (rate == 4){
+			return Rate.FOUR; 
+		} else if (rate == 5){
+			return Rate.FIVE;
+		} else {
+			return null;
 		}
 	}
 }
