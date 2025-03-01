@@ -8,6 +8,7 @@ import model.Album;
 import model.LibraryModel;
 import model.Playlist;
 import model.Song;
+import model.Song.Rate;
 
 public class MusicSim {
 	private MusicStore ms;
