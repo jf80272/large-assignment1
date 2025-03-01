@@ -37,7 +37,20 @@ public class LibraryModel {
 				this.songList.add(song);
 			}
 		}
-		this.albumList.add(al);
+		if (!containsAlbum(al)) {
+			this.albumList.add(al);
+		}
+	}
+
+	// Private contains methods to see if album is already in albumlist
+	private boolean containsAlbum(Album album) {
+		for (Album a : this.albumList) {
+			if (a.getTitle() == album.getTitle() && 
+					a.getArtist() == album.getArtist()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// Checks if song is in songList
