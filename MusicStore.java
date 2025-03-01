@@ -15,7 +15,6 @@ public class MusicStore {
 	public MusicStore(String fileName) {
 		albumList = new ArrayList<>();
 		addAlbums(fileName);
-		printAlbums();
 	}
 	
 	/* METHODS */	
