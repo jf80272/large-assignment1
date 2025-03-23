@@ -54,7 +54,7 @@ public class MusicStore {
 			// Reading other lines to make a song list
 			ArrayList<Song> songs = new ArrayList<>();
 			while (line != null) {
-				songs.add(new Song(line, albumInfo[1], albumInfo[0]));
+				songs.add(new Song(line, albumInfo[1], albumInfo));
 				line = reader.readLine();
 			}
 			
