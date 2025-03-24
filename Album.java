@@ -41,6 +41,9 @@ public class Album {
 	public ArrayList<Song> getSongList() {
 		ArrayList<Song> sList = new ArrayList<Song>();
 		for (Song song : this.songList) {
+			Song newSong = new Song(song.getTitle(), song.getArtist(), song.getAlbum());
+			newSong.setFav(song.isFav());
+			newSong.setRating(song.getRating());
 			sList.add(song);
 		}
 		return sList;
