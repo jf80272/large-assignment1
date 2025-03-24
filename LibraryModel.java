@@ -66,6 +66,9 @@ public class LibraryModel {
 		this.favSongsPlaylist();
 		this.topSongsPlaylist();
 		this.genrePlaylist();
+		for (Playlist playlist : this.playlistList.values()) {
+			playlist.rmSong(song);
+		}
 		this.songs = new ArrayList<String>(this.songList.keySet());
 	}
 
@@ -202,7 +205,7 @@ public class LibraryModel {
 		}
 	}
 
-	// Search for a song and get its album
+	// Search for a song get its album in library
 	public Album findAlbumBySong(Song song) {
 		String albumTitle = song.getAlbum()[0];
 		String artist = song.getArtist();
@@ -238,7 +241,7 @@ public class LibraryModel {
 	public ArrayList<Song> findSongsByGenre(String genre) {
 		ArrayList<Song> songs = new ArrayList<>();
 		for (Song song : this.songList.values()) {
-			if (song.getAlbum()[2] == genre) {
+			if (song.getAlbum()[2].equals(genre)) {
 				songs.add(song);
 			}
 		}
