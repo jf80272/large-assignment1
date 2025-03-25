@@ -94,8 +94,12 @@ public class User {
 				
 				// Update recentPlays
 				// Shift elements of recentPlays to make room for songPlayed
-				System.arraycopy(recentPlays, 0, recentPlays, 1, 9);
-				recentPlays[0] = songPlayed;
+				if (recentPlays[0] == null) {
+					recentPlays[0] = songPlayed;
+				} else if (!recentPlays[0].equals(songPlayed)) {
+					System.arraycopy(recentPlays, 0, recentPlays, 1, 9);
+					recentPlays[0] = songPlayed;
+				}
 				
 				// Check mostPlays and update if needed
 				int lastMostPlaysIndex = -1;
@@ -107,14 +111,19 @@ public class User {
 					}
 				}
 				
-				if (lastMostPlaysIndex != -1) {
-					// Compare num of plays of most recently played song with that of last song in mostPlays
-					int lastMostPlays = songPlays.get(mostPlays[lastMostPlaysIndex]);
-					int songPlayedPlays = songPlays.get(songPlayed);
-					
-					if (lastMostPlays <= songPlayedPlays) {
-						mostPlays[lastMostPlaysIndex] = songPlayed;
-					}
+				if (lastMostPlaysIndex != -1 && !songPlayed.equals(mostPlays[lastMostPlaysIndex])) {
+						// Compare num of plays of most recently played song with that of last song in mostPlays
+						int lastMostPlays = songPlays.get(mostPlays[lastMostPlaysIndex]);
+						int songPlayedPlays = songPlays.get(songPlayed);
+						
+						
+						if (lastMostPlays <= songPlayedPlays) {
+							if (lastMostPlaysIndex != 9) {
+								mostPlays[lastMostPlaysIndex + 1] = songPlayed;
+							} else {
+								mostPlays[lastMostPlaysIndex] = songPlayed;
+							}
+						}
 				} else {
 					// If lastMostPlaysIndex is still -1, no values have been initialized yet
 					mostPlays[0] = songPlayed;
