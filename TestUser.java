@@ -20,7 +20,6 @@ import java.util.HashMap;
 
 public class TestUser {
     private User user;
-    private LibraryModel library;
     private Song song1;
     private Song song2;
 
