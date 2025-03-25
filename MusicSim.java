@@ -18,7 +18,7 @@ public class MusicSim {
 	private Scanner scanner;
 	private UserData ud;
 	private User currUser;
-
+	
 	public MusicSim(String fileName) {
 		ms = new MusicStore(fileName);
 		library = new LibraryModel();
@@ -238,6 +238,8 @@ public class MusicSim {
 					if (s.getTitle().equals(sTitle)) {
 						library.addToSongList(s);
 						songAdded = true;
+						currUser.updateSongPlays();
+						
 						System.out.println("Added the following song: ");
 						System.out.println(s);
 						System.out.println();
@@ -284,6 +286,8 @@ public class MusicSim {
 			for (Album a : albums) {
 				if (a.getTitle().equals(title)) {
 					library.addToAlbumList(a);
+					currUser.updateSongPlays();
+					
 					System.out.println("Added the following album: ");
 					System.out.println(a);
 					System.out.println();
@@ -595,7 +599,7 @@ public class MusicSim {
 		String aTitle = scanner.nextLine().trim();
 		System.out.print("Enter song title: ");
 		String sTitle = scanner.nextLine().trim();
-
+		
 		ArrayList<Song> songs = library.findSongByTitle(sTitle);
 		if (!songs.isEmpty()) {
 			for (Song s : songs) {
@@ -603,7 +607,7 @@ public class MusicSim {
 					if (currUser != null) {
 						currUser.playSong(s.getTitle(), s.getArtist());
 					}
-
+					
 					System.out.println("Playing: ");
 					System.out.println(s);
 					System.out.println();
@@ -639,25 +643,25 @@ public class MusicSim {
 			System.out.println("Cannot be done without logging in.\n");
 		}
 	}
-
+	
 	public void newUser() {
 		System.out.print("Enter a username: ");
 		String username = scanner.nextLine().trim();
 		System.out.print("Enter a password: ");
 		String password = scanner.nextLine().trim();
-
+		
 		User u = new User(username, password);
 		ud.addUserData(username, u);
 		System.out.println("User created successfully.\n");
 	}
-
+	
 	public void login() {
 		if (currUser == null) {
 			System.out.print("Enter a username: ");
 			String username = scanner.nextLine().trim();
 			System.out.print("Enter a password: ");
 			String password = scanner.nextLine().trim();
-
+			
 			User u = ud.getUser(username, password);
 			if (u != null) {
 				library = u.getLibrary();
@@ -670,7 +674,7 @@ public class MusicSim {
 			System.out.println("You're already logged in.\n");
 		}
 	}
-
+	
 	public void logout() {
 		if (currUser != null) {
 			currUser = null;
