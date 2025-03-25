@@ -4,21 +4,27 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import database.MusicStore;
+import database.UserData;
 import model.Album;
 import model.LibraryModel;
 import model.Playlist;
 import model.Song;
 import model.Song.Rate;
+import model.User;
 
 public class MusicSim {
 	private MusicStore ms;
-	private LibraryModel userLibrary;
+	private LibraryModel library;
 	private Scanner scanner;
-
+	private UserData ud;
+	private User currUser;
+	
 	public MusicSim(String fileName) {
 		ms = new MusicStore(fileName);
-		userLibrary = new LibraryModel();
+		library = new LibraryModel();
 		scanner = new Scanner(System.in);
+		ud = new UserData();
+		currUser = null;
 	}
 
 	public void searchMusicStore() {
@@ -141,7 +147,7 @@ public class MusicSim {
 			System.out.print("Enter genre: ");
 			String genre = scanner.nextLine().trim();
 			System.out.println();
-			ArrayList<Song> songs3 = userLibrary.findSongsByGenre(genre);
+			ArrayList<Song> songs3 = library.findSongsByGenre(genre);
 			if (!songs3.isEmpty()) {
 				for (Song s : songs3) {
 					System.out.println(s);
@@ -185,11 +191,11 @@ public class MusicSim {
 			System.out.print("Enter the name of an artist: ");
 			String artist5 = scanner.nextLine().trim();
 			System.out.println();
-			ArrayList<Song> songs = userLibrary.findSongByTitle(title2);
+			ArrayList<Song> songs = library.findSongByTitle(title2);
 			for (Song song : songs) {
 				if (song.getArtist().equals(artist5)) {
 					Album album = ms.findAlbumByTitle(song.getAlbum()[0]).get(0);
-					Album albumInLibrary = userLibrary.findAlbumBySong(song);
+					Album albumInLibrary = library.findAlbumBySong(song);
 					System.out.println("Full Album: ");
 					System.out.println(album.toString());
 					System.out.println();
@@ -206,7 +212,7 @@ public class MusicSim {
 			System.out.print("Enter the name of a playlist: ");
 			String pName = scanner.nextLine().trim();
 			System.out.println();
-			Playlist p = userLibrary.findPlaylist(pName);
+			Playlist p = library.findPlaylist(pName);
 			if (p != null) {
 				System.out.println(p);
 			} else {
@@ -230,7 +236,7 @@ public class MusicSim {
 			for (Album a : albums) {
 				for (Song s : a.getSongList()) {
 					if (s.getTitle().equals(sTitle)) {
-						userLibrary.addToSongList(s);
+						library.addToSongList(s);
 						songAdded = true;
 						System.out.println("Added the following song: ");
 						System.out.println(s);
@@ -256,7 +262,7 @@ public class MusicSim {
 			for (Album a : albums) {
 				for (Song s : a.getSongList()) {
 					if (s.getTitle().equals(sTitle)) {
-						userLibrary.rmFromSongList(s);
+						library.rmFromSongList(s);
 						songRemoved = true;
 						System.out.println("Removed the following song: ");
 						System.out.println(sTitle + " in " + aTitle);
@@ -277,7 +283,7 @@ public class MusicSim {
 		if (!albums.isEmpty()) {
 			for (Album a : albums) {
 				if (a.getTitle().equals(title)) {
-					userLibrary.addToAlbumList(a);
+					library.addToAlbumList(a);
 					System.out.println("Added the following album: ");
 					System.out.println(a);
 					System.out.println();
@@ -295,7 +301,7 @@ public class MusicSim {
 		if (!albums.isEmpty()) {
 			for (Album a : albums) {
 				if (a.getTitle().equals(title)) {
-					userLibrary.rmFromAlbumList(a);
+					library.rmFromAlbumList(a);
 					System.out.println("Removed the following album: ");
 					System.out.println(title);
 					System.out.println();
@@ -317,14 +323,14 @@ public class MusicSim {
 
 		switch (userChoice) {
 		case "1":
-			userLibrary.shuffleSongList();
+			library.shuffleSongList();
 			System.out.println("Shuffled!");
 			System.out.println();
 			break;
 		case "2":
 			System.out.print("Playlist name: ");
 			userChoice = scanner.nextLine();
-			userLibrary.shuffleInPlaylist(userChoice);
+			library.shuffleInPlaylist(userChoice);
 			System.out.println("Shuffled " + userChoice + "!");
 			System.out.println();
 			break;
@@ -350,7 +356,7 @@ public class MusicSim {
 			orderOfSongs();
 			break;
 		case "2":
-			ArrayList<String> artistList = userLibrary.getArtists();
+			ArrayList<String> artistList = library.getArtists();
 			if (!artistList.isEmpty()) {
 				for (String s : artistList) {
 					System.out.println(s);
@@ -361,18 +367,18 @@ public class MusicSim {
 			}
 			break;
 		case "3":
-			ArrayList<String> albumList = userLibrary.getAlbumList();
+			ArrayList<String> albumList = library.getAlbumList();
 			if (!albumList.isEmpty()) {
-				for (String s : userLibrary.getAlbumList()) {
+				for (String s : library.getAlbumList()) {
 					System.out.println(s);
 				}
 				System.out.println();
 			}
 			break;
 		case "4":
-			ArrayList<String> playListList = userLibrary.getAllPlayList();
+			ArrayList<String> playListList = library.getAllPlayList();
 			if (!playListList.isEmpty()) {
-				for (String s : userLibrary.getAllPlayList()) {
+				for (String s : library.getAllPlayList()) {
 					System.out.println(s);
 				}
 				System.out.println();
@@ -381,9 +387,9 @@ public class MusicSim {
 			}
 			break;
 		case "5":
-			ArrayList<String> favSongList = userLibrary.getFavSongs();
+			ArrayList<String> favSongList = library.getFavSongs();
 			if (!favSongList.isEmpty()) {
-				for (String s : userLibrary.getFavSongs()) {
+				for (String s : library.getFavSongs()) {
 					System.out.println(s);
 				}
 				System.out.println();
@@ -409,7 +415,7 @@ public class MusicSim {
 
 		switch (userChoice) {
 		case "1":
-			ArrayList<String> songList = userLibrary.getSongList();
+			ArrayList<String> songList = library.getSongList();
 			if (!songList.isEmpty()) {
 				for (String s : songList) {
 					System.out.println(s);
@@ -420,7 +426,7 @@ public class MusicSim {
 			}
 			break;
 		case "2":
-			ArrayList<String> sortedSongList = userLibrary.getSortedSongList();
+			ArrayList<String> sortedSongList = library.getSortedSongList();
 			if (!sortedSongList.isEmpty()) {
 				for (String s : sortedSongList) {
 					System.out.println(s);
@@ -431,7 +437,7 @@ public class MusicSim {
 			}
 			break;
 		case "3":
-			ArrayList<String> ArtistSongList = userLibrary.getSortedSongsByArtists();
+			ArrayList<String> ArtistSongList = library.getSortedSongsByArtists();
 			if (!ArtistSongList.isEmpty()) {
 				for (String s : ArtistSongList) {
 					System.out.println(s);
@@ -442,7 +448,7 @@ public class MusicSim {
 			}
 			break;
 		case "4":
-			ArrayList<String> songgRate = userLibrary.getSortedRatings();
+			ArrayList<String> songgRate = library.getSortedRatings();
 			if (!songgRate.isEmpty()) {
 				for (String s : songgRate) {
 					System.out.println(s);
@@ -460,21 +466,21 @@ public class MusicSim {
 	public void createPlaylist() {
 		System.out.print("\nEnter a name for the playlist: ");
 		String name = scanner.nextLine().trim();
-		userLibrary.createPlaylist(name);
+		library.createPlaylist(name);
 		System.out.println("Playlist created.\n");
 	}
 
 	public void addSongToPlaylist() {
 		System.out.print("\nEnter playlist name: ");
 		String name = scanner.nextLine().trim();
-		if (userLibrary.containsPlaylist(name)) {
-			Playlist playlist = userLibrary.findPlaylist(name);
+		if (library.containsPlaylist(name)) {
+			Playlist playlist = library.findPlaylist(name);
 			System.out.print("Enter album title: ");
 			String aTitle = scanner.nextLine().trim();
 			System.out.print("Enter song title: ");
 			String sTitle = scanner.nextLine().trim();
 
-			ArrayList<Song> songs = userLibrary.findSongByTitle(sTitle);
+			ArrayList<Song> songs = library.findSongByTitle(sTitle);
 			if (!songs.isEmpty()) {
 				for (Song s : songs) {
 					if (s.getAlbum().equals(aTitle)) {
@@ -496,14 +502,14 @@ public class MusicSim {
 	public void removeSongFromPlaylist() {
 		System.out.print("\nEnter playlist name: ");
 		String name = scanner.nextLine().trim();
-		if (userLibrary.containsPlaylist(name)) {
-			Playlist playlist = userLibrary.findPlaylist(name);
+		if (library.containsPlaylist(name)) {
+			Playlist playlist = library.findPlaylist(name);
 			System.out.print("Enter album title: ");
 			String aTitle = scanner.nextLine().trim();
 			System.out.print("Enter song title: ");
 			String sTitle = scanner.nextLine().trim();
 
-			ArrayList<Song> songs = userLibrary.findSongByTitle(sTitle);
+			ArrayList<Song> songs = library.findSongByTitle(sTitle);
 			if (!songs.isEmpty()) {
 				for (Song s : songs) {
 					if (s.getAlbum()[0].equals(aTitle)) {
@@ -524,8 +530,8 @@ public class MusicSim {
 	public void viewPlaylist() {
 		System.out.print("\nEnter playlist name: ");
 		String name = scanner.nextLine().trim();
-		if (userLibrary.containsPlaylist(name)) {
-			Playlist pl = userLibrary.findPlaylist(name);
+		if (library.containsPlaylist(name)) {
+			Playlist pl = library.findPlaylist(name);
 			for (String song : pl.getList()) {
 				System.out.println(song);
 			}
@@ -539,7 +545,7 @@ public class MusicSim {
 		System.out.print("Enter song title: ");
 		String sTitle = scanner.nextLine().trim();
 
-		ArrayList<Song> songs = userLibrary.findSongByTitle(sTitle);
+		ArrayList<Song> songs = library.findSongByTitle(sTitle);
 		if (!songs.isEmpty()) {
 			for (Song s : songs) {
 				if (s.getAlbum().equals(aTitle)) {
@@ -560,7 +566,7 @@ public class MusicSim {
 		System.out.print("Enter song title: ");
 		String sTitle = scanner.nextLine().trim();
 
-		ArrayList<Song> songs = userLibrary.findSongByTitle(sTitle);
+		ArrayList<Song> songs = library.findSongByTitle(sTitle);
 		if (!songs.isEmpty()) {
 			System.out.print("Enter your rating: ");
 			int rating = Integer.parseInt(scanner.nextLine().trim());
@@ -581,6 +587,97 @@ public class MusicSim {
 			}
 		} else {
 			System.out.println("Song was unable to be rated.\n");
+		}
+	}
+
+	public void playSong() {
+		System.out.print("Enter album title: ");
+		String aTitle = scanner.nextLine().trim();
+		System.out.print("Enter song title: ");
+		String sTitle = scanner.nextLine().trim();
+		
+		ArrayList<Song> songs = library.findSongByTitle(sTitle);
+		if (!songs.isEmpty()) {
+			for (Song s : songs) {
+				if (s.getAlbum().equals(aTitle)) {
+					if (currUser != null) {
+						currUser.playSong(s.getTitle(), s.getArtist());
+					}
+					
+					System.out.println("Playing: ");
+					System.out.println(s);
+					System.out.println();
+				}
+			}
+		} else {
+			System.out.println("Song was unable to be played.\n");
+		}
+	}
+
+	public void getRecentPlays() {
+		if (currUser != null) {
+			Song[] recentPlays = currUser.getRecentPlays();
+			System.out.println("Most recently played songs:");
+			for (Song s : recentPlays) {
+				System.out.println(s);
+			}
+			System.out.println();
+		} else {
+			System.out.println("Cannot be done without logging in.\n");
+		}
+	}
+
+	public void getFrequentPlays() {
+		if (currUser != null) {
+			Song[] mostPlays = currUser.getMostPlays();
+			System.out.println("Most frequently played songs:");
+			for (Song s : mostPlays) {
+				System.out.println(s);
+			}
+			System.out.println();
+		} else {
+			System.out.println("Cannot be done without logging in.\n");
+		}
+	}
+	
+	public void newUser() {
+		System.out.print("Enter a username: ");
+		String username = scanner.nextLine().trim();
+		System.out.print("Enter a password: ");
+		String password = scanner.nextLine().trim();
+		
+		User u = new User(username, password);
+		ud.addUserData(username, u);
+		System.out.println("User created successfully.\n");
+	}
+	
+	public void login() {
+		if (currUser == null) {
+			System.out.print("Enter a username: " );
+			String username = scanner.nextLine().trim();
+			System.out.print("Enter a password: ");
+			String password = scanner.nextLine().trim();
+			
+			User u = ud.getUser(username, password);
+			if (u != null) {
+				library = u.getLibrary();
+				currUser = u;
+				System.out.println("Login successful. Welcome, " + username + "!\n");
+			} else {
+				System.out.println("Username or password was incorrect.\n");
+			}
+		} else {
+			System.out.println("You're already logged in.\n");
+		}
+	}
+	
+	public void logout() {
+		if (currUser != null) {
+			currUser = null;
+			library = new LibraryModel();
+			System.out.println("Logout successful.\n");
+		} else {
+			System.out.println("You're already logged out.\n");
 		}
 	}
 
