@@ -63,8 +63,7 @@ public class User {
 	
 	// Puts songs newly added to library to songPlays as values and their number of plays as keys
 	// New songs will always have 0 plays
-	// NOT CURRENTLY WORKING
-	private void updateSongPlays() {
+	public void updateSongPlays() {
 		ArrayList<Song> songList = library.getSongObjectList();
 		for (Song s : songList) {
 			if (!songPlays.containsKey(s)) {
