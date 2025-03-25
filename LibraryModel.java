@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 import model.Song.Rate;
 
@@ -12,13 +11,13 @@ public class LibraryModel {
 	/* INSTANCE VAIRBALE */
 	private HashMap<String, Album> albumList;
 	private HashMap<String, Playlist> playlistList;
-	private LinkedHashMap<String, Song> songList;
+	private HashMap<String, Song> songList;
 	private ArrayList<String> songs;
 
 	/* CONSTRUCTORS */
 	public LibraryModel() {
 		this.albumList = new HashMap<>();
-		this.songList = new LinkedHashMap<>();
+		this.songList = new HashMap<>();
 		this.playlistList = new HashMap<>();
 		this.songs = new ArrayList<String>();
 		Playlist fav = new Playlist("Favorites");
@@ -32,96 +31,67 @@ public class LibraryModel {
 	// Add Song to songList
 	public void addToSongList(Song song) {
 		if (!this.songList.containsKey(song.toString())) {
-			// Deep copy of Song
 			Song s = new Song(song.getTitle(), song.getArtist(), song.getAlbum());
 			s.setRating(song.getRating());
 			s.setFav(song.isFav());
-			if (!songList.containsKey(s.toString())) {
-				songList.put(s.toString(), s);
-			}
+			songList.put(s.toString(), s);
 
-			// Check if album is in albumlist
 			String[] album = s.getAlbum();
 			ArrayList<Song> newSongList = new ArrayList<Song>();
 			newSongList.add(song);
 			Album check = new Album(album[0], album[1], album[2], Integer.parseInt(album[3]), newSongList);
 			this.addToAlbumList(check);
-
-			// Update Favorites, TopRated, and auto genres
 			this.favSongsPlaylist();
 			this.topSongsPlaylist();
 			this.genrePlaylist();
-
-			// Updates songs
 			this.songs = new ArrayList<String>(this.songList.keySet());
 		}
 	}
 
 	// Remove song from songList
 	public void rmFromSongList(Song song) {
-		// Removes song from songList
 		if (this.songList.containsKey(song.toString())) {
 			this.songList.remove(song.toString());
+			for (Playlist pl : this.playlistList.values()) {
+				pl.rmSong(song);
+			}
 		}
-		// Removes song from albumList
 		if (this.albumList.containsKey(song.getAlbum()[0] + " " + song.getAlbum()[1])) {
-			// Gets album from albumlist
-			Album getAl = this.albumList.get(song.getAlbum()[0] + " " + song.getAlbum()[1]);
-			// Gets Song from getAl and removes song
-			ArrayList<Song> getSongs = getAl.getSongList();
-			getSongs.remove(song);
-			// Builds new album and replaces the original one
-			Album newAl = new Album(getAl.getTitle(), getAl.getArtist(), getAl.getGenre(), getAl.getYear(), getSongs);
+			Album copyAl = this.albumList.get(song.getAlbum()[0] + " " + song.getAlbum()[1]);
+			ArrayList<Song> rmSong = copyAl.getSongList();
+			rmSong.remove(song);
+			Album newAl = new Album(copyAl.getTitle(), copyAl.getArtist(), copyAl.getGenre(), copyAl.getYear(), rmSong);
 			this.albumList.put(song.getAlbum()[0] + " " + song.getAlbum()[1], newAl);
 		}
-
-		// Update Favorites, TopRated, auto genres, and any additional playlists
 		this.favSongsPlaylist();
 		this.topSongsPlaylist();
 		this.genrePlaylist();
-		for (Playlist playlist : this.playlistList.values()) {
-			playlist.rmSong(song);
-		}
-
-		// Updates songs
 		this.songs = new ArrayList<String>(this.songList.keySet());
 	}
 
 	// Add an album to albumList
 	public void addToAlbumList(Album album) {
-		// Deep copy album
 		Album al = new Album(album.getTitle(), album.getArtist(), album.getGenre(), album.getYear(),
 				album.getSongList());
-		// Adds album if album is not in albumlist
 		if (!this.albumList.containsKey(al.getTitle() + " " + al.getArtist())) {
 			this.albumList.put(al.getTitle() + " " + al.getArtist(), al);
-
-			// Adds additional songs if album is in albumList
 		} else {
-			// Get album from albumList
 			Album getAl = this.albumList.get(al.getTitle() + " " + al.getArtist());
-			// Get songs from album
 			ArrayList<Song> newList = getAl.getSongList();
-			// Adds additional songs from al to newList
 			for (Song song : al.getSongList()) {
 				if (!getAl.contains(song.getTitle())) {
 					newList.add(song);
 				}
 			}
-			// Create new album and adds in albumlist
 			al = new Album(album.getTitle(), album.getArtist(), album.getGenre(), album.getYear(), newList);
 			this.albumList.put(al.getTitle() + " " + al.getArtist(), al);
 		}
-		// Adds songs from album to songList
 		for (Song song : al.getSongList()) {
 			this.addToSongList(song);
 		}
-		// Update Favorites, TopRated, and auto genres
 		this.favSongsPlaylist();
 		this.topSongsPlaylist();
 		this.genrePlaylist();
-
-		// Updates songs
 		this.songs = new ArrayList<String>(this.songList.keySet());
 	}
 
@@ -129,19 +99,14 @@ public class LibraryModel {
 	public void rmFromAlbumList(Album album) {
 		if (this.albumList.containsKey(album.getTitle() + " " + album.getArtist())) {
 			this.albumList.remove(album.getTitle() + " " + album.getArtist());
-
-			// Removes songs from songList;
 			for (Song song : album.getSongList()) {
 				if (this.songList.containsKey(song.toString())) {
 					this.rmFromSongList(song);
 				}
 			}
-			// Update Favorites, TopRated, and auto genres
 			this.favSongsPlaylist();
 			this.topSongsPlaylist();
 			this.genrePlaylist();
-
-			// Updates songs
 			this.songs = new ArrayList<String>(this.songList.keySet());
 		}
 	}
@@ -171,8 +136,8 @@ public class LibraryModel {
 		}
 	}
 
-	// Create hashmap and organize songs by genre
-	private HashMap<String, ArrayList<Song>> helperGenreList() {
+	// Create playlists based on genre
+	public void genrePlaylist() {
 		HashMap<String, ArrayList<Song>> songs = new HashMap<>();
 		for (Song song : this.songList.values()) {
 			String genre = song.getAlbum()[2];
@@ -181,12 +146,6 @@ public class LibraryModel {
 			}
 			songs.get(genre).add(song);
 		}
-		return songs;
-	}
-
-	// Create playlists based on genre
-	public void genrePlaylist() {
-		HashMap<String, ArrayList<Song>> songs = helperGenreList();
 		for (String genre : songs.keySet()) {
 			ArrayList<Song> song = songs.get(genre);
 			if (song.size() >= 10) {
@@ -200,7 +159,6 @@ public class LibraryModel {
 
 	// Add a song to a playlist
 	public void addToPlaylist(Song song, String name) {
-		// Adds song to songList but not the playlist
 		if (!this.songList.containsKey(song.toString())) {
 			this.addToSongList(song);
 		}
@@ -221,7 +179,7 @@ public class LibraryModel {
 		return this.playlistList.containsKey(name);
 	}
 
-	// Shuffle songs
+	// Shuffle songlist
 	public void shuffleSongList() {
 		this.songs = new ArrayList<String>(this.songList.keySet());
 		Collections.shuffle(songs);
@@ -244,7 +202,7 @@ public class LibraryModel {
 		}
 	}
 
-	// Search for a song get its album in library
+	// Search for a song and get its album
 	public Album findAlbumBySong(Song song) {
 		String albumTitle = song.getAlbum()[0];
 		String artist = song.getArtist();
@@ -278,11 +236,13 @@ public class LibraryModel {
 
 	// Search for songs by genre
 	public ArrayList<Song> findSongsByGenre(String genre) {
-		HashMap<String, ArrayList<Song>> songs = helperGenreList();
-		if (songs.containsKey(genre)) {
-			return songs.get(genre);
+		ArrayList<Song> songs = new ArrayList<>();
+		for (Song song : this.songList.values()) {
+			if (song.getAlbum()[2] == genre) {
+				songs.add(song);
+			}
 		}
-		return null;
+		return songs;
 	}
 
 	// Search for an album by title
@@ -355,6 +315,11 @@ public class LibraryModel {
 		}
 		return list;
 	}
+	
+	// List of Song objects
+	protected ArrayList<Song> getSongObjectList() {
+		return new ArrayList<>(songList.values());
+	}
 
 	public ArrayList<String> getSortedSongList() {
 		ArrayList<String> list = this.getSongList();
@@ -377,7 +342,6 @@ public class LibraryModel {
 	}
 
 	public ArrayList<String> getSortedRatings() {
-		// Create hashmap and organize songs by rating
 		HashMap<Rate, ArrayList<String>> sort = new HashMap<>();
 		ArrayList<String> list = new ArrayList<String>();
 		sort.put(Rate.ONE, new ArrayList<String>());
@@ -393,7 +357,6 @@ public class LibraryModel {
 				sort.get(r).add(song.getTitle() + " (" + song.getArtist() + ")");
 			}
 		}
-		// Insert all songs in order
 		list.addAll(sort.get(Rate.ONE));
 		list.addAll(sort.get(Rate.TWO));
 		list.addAll(sort.get(Rate.THREE));
