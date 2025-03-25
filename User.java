@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -39,8 +40,10 @@ public class User {
 			md.reset();
 			md.update(salt);
 			byte[] byteHashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
-			String strHashedPassword = toHexString(byteHashedPassword);
-			String strSalt = toHexString(salt);
+
+            // Convert byte arrays to Base64 for safe storage
+            String strHashedPassword = Base64.getEncoder().encodeToString(byteHashedPassword);
+            String strSalt = Base64.getEncoder().encodeToString(salt);
 
 			// Store hashed password in user database text file
 			if (file.length() == 0) {
@@ -57,31 +60,6 @@ public class User {
 
 	
 	/* METHODS */
-	// Converts byte array into hex string
-	public static String toHexString(byte[] bytes) {
-		StringBuilder hexString = new StringBuilder();
-
-		for (int i = 0; i < bytes.length; i++) {
-			String hex = Integer.toHexString(0xFF & bytes[i]);
-			if (hex.length() == 1) {
-				hexString.append('0');
-			}
-			hexString.append(hex);
-		}
-
-		return hexString.toString();
-	}
-
-	// Converts hex string into byte array
-	public static byte[] hexStringToByteArray(String hexString) {
-		int len = hexString.length();
-		byte[] data = new byte[len / 2];
-		for (int i = 0; i < len; i += 2) {
-			data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
-					+ Character.digit(hexString.charAt(i+1), 16));
-		}
-		return data;
-	}
 	
 	// Puts songs newly added to library to songPlays as values and their number of plays as keys
 	// New songs will always have 0 plays
