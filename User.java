@@ -28,7 +28,7 @@ public class User {
 		mostPlays = new Song[10];
 		
 		// set password in file
-		String fileName = "users.txt";
+		String fileName = "src/database/users.txt";
 		File file = new File(fileName);
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))){
 			// Salt and hash user provided plaintext password
@@ -36,11 +36,12 @@ public class User {
 			byte[] salt = new byte[16];
 			random.nextBytes(salt);
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.reset();
 			md.update(salt);
 			byte[] byteHashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
-			String strHashedPassword = new String(byteHashedPassword, StandardCharsets.UTF_8);
-			String strSalt = new String(salt, StandardCharsets.UTF_8);
-			
+			String strHashedPassword = toHexString(byteHashedPassword);
+			String strSalt = toHexString(salt);
+
 			// Store hashed password in user database text file
 			if (file.length() == 0) {
 				writer.write(username + "," + strSalt + "," + strHashedPassword);
@@ -53,8 +54,35 @@ public class User {
 			e.printStackTrace();
 		}
 	}
+
 	
 	/* METHODS */
+	// Converts byte array into hex string
+	public static String toHexString(byte[] bytes) {
+		StringBuilder hexString = new StringBuilder();
+
+		for (int i = 0; i < bytes.length; i++) {
+			String hex = Integer.toHexString(0xFF & bytes[i]);
+			if (hex.length() == 1) {
+				hexString.append('0');
+			}
+			hexString.append(hex);
+		}
+
+		return hexString.toString();
+	}
+
+	// Converts hex string into byte array
+	public static byte[] hexStringToByteArray(String hexString) {
+		int len = hexString.length();
+		byte[] data = new byte[len / 2];
+		for (int i = 0; i < len; i += 2) {
+			data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4)
+					+ Character.digit(hexString.charAt(i+1), 16));
+		}
+		return data;
+	}
+	
 	// Puts songs newly added to library to songPlays as values and their number of plays as keys
 	// New songs will always have 0 plays
 	// NOT CURRENTLY WORKING
@@ -85,14 +113,11 @@ public class User {
 			// Update recentPlays and mostPlays if needed as well
 			if (songPlayed != null) {
 				Integer plays = songPlays.get(songPlayed);
-				songPlays.put(songPlayed, plays++);
+				songPlays.put(songPlayed, plays+1);
 				
 				// Update recentPlays
 				// Shift elements of recentPlays to make room for songPlayed
-				for (int i = 8; i >= 0; i--) {
-					recentPlays[i] = recentPlays[i++];
-				}
-				
+				System.arraycopy(recentPlays, 0, recentPlays, 1, 9);
 				recentPlays[0] = songPlayed;
 				
 				// Check mostPlays and update if needed
@@ -133,6 +158,7 @@ public class User {
 		int i = 0;
 		while (recentPlays[i] != null && i < 10) {
 			returnArr[i] = new Song(recentPlays[i].getTitle(), recentPlays[i].getArtist(), recentPlays[i].getAlbum());
+			i++;
 		}
 		
 		return returnArr;
@@ -143,6 +169,7 @@ public class User {
 		int i = 0;
 		while (mostPlays[i] != null && i < 10) {
 			returnArr[i] = new Song(mostPlays[i].getTitle(), mostPlays[i].getArtist(), mostPlays[i].getAlbum());
+			i++;
 		}
 		
 		return returnArr;
