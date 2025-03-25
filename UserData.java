@@ -32,7 +32,7 @@ public class UserData {
 		String strHashedPassword = "";
 		
 		try {
-			reader = new BufferedReader(new FileReader("users.txt"));
+			reader = new BufferedReader(new FileReader("src/database/users.txt"));
 			String line = reader.readLine();
 			
 			while (line != null) {
@@ -58,12 +58,14 @@ public class UserData {
 		
 		try {
 			// Salt and hash input password and check if it matches hashed password saved in user/pass database
-			byte[] byteSalt = salt.getBytes(StandardCharsets.UTF_8);
+			byte[] byteSalt = User.hexStringToByteArray(salt);
+
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.reset();
 			md.update(byteSalt);
 			byte[] byteHashedInputPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
-			String strHashedInputPassword = new String(byteHashedInputPassword, StandardCharsets.UTF_8);
-			
+
+			String strHashedInputPassword = User.toHexString(byteHashedInputPassword);
 			if (strHashedInputPassword.equals(strHashedPassword)) {
 				return userData.get(username);
 			}
