@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.HashMap;
 
 import model.User;
@@ -58,14 +59,14 @@ public class UserData {
 		
 		try {
 			// Salt and hash input password and check if it matches hashed password saved in user/pass database
-			byte[] byteSalt = User.hexStringToByteArray(salt);
+			byte[] byteSalt = Base64.getDecoder().decode(salt);
 
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
 			md.reset();
 			md.update(byteSalt);
 			byte[] byteHashedInputPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
 
-			String strHashedInputPassword = User.toHexString(byteHashedInputPassword);
+			String strHashedInputPassword = Base64.getEncoder().encodeToString(byteHashedInputPassword);
 			if (strHashedInputPassword.equals(strHashedPassword)) {
 				return userData.get(username);
 			}
