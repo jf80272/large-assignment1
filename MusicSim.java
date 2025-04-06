@@ -677,7 +677,7 @@ public class MusicSim {
 	}
 	
 	public void logout() {
-		if (currUser != null) {
+		if (!currUser.getUsername().equals("guest")) {
 			currUser = ud.getUser("guest", "guestpass");
 			library = new LibraryModel();
 			System.out.println("Logout successful.\n");
