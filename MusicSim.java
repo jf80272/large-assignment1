@@ -24,7 +24,7 @@ public class MusicSim {
 		library = new LibraryModel();
 		scanner = new Scanner(System.in);
 		ud = new UserData();
-		currUser = null;
+		currUser = new User("guest", "guestpass");
 	}
 
 	public void searchMusicStore() {
@@ -583,6 +583,7 @@ public class MusicSim {
 			for (Song s : songs) {
 				if (s.getAlbum()[0].equals(aTitle)) {
 					s.setRating(r);
+					library.topSongsPlaylist();
 
 					System.out.println("Rated the following song: ");
 					System.out.println(s);
@@ -656,7 +657,7 @@ public class MusicSim {
 	}
 	
 	public void login() {
-		if (currUser == null) {
+		if (currUser.getUsername().equals("guest")) {
 			System.out.print("Enter a username: ");
 			String username = scanner.nextLine().trim();
 			System.out.print("Enter a password: ");
@@ -677,7 +678,7 @@ public class MusicSim {
 	
 	public void logout() {
 		if (currUser != null) {
-			currUser = null;
+			currUser = ud.getUser("guest", "guestpass");
 			library = new LibraryModel();
 			System.out.println("Logout successful.\n");
 		} else {
