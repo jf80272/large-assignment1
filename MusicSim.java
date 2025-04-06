@@ -24,7 +24,7 @@ public class MusicSim {
 		library = new LibraryModel();
 		scanner = new Scanner(System.in);
 		ud = new UserData();
-		currUser = new User("guest", "guestpass");
+		currUser = null;
 	}
 
 	public void searchMusicStore() {
@@ -238,7 +238,10 @@ public class MusicSim {
 					if (s.getTitle().equals(sTitle)) {
 						library.addToSongList(s);
 						songAdded = true;
-						currUser.updateSongPlays();
+						
+						if (currUser != null) {
+							currUser.updateSongPlays();
+						}
 						
 						System.out.println("Added the following song: ");
 						System.out.println(s);
@@ -286,7 +289,10 @@ public class MusicSim {
 			for (Album a : albums) {
 				if (a.getTitle().equals(title)) {
 					library.addToAlbumList(a);
-					currUser.updateSongPlays();
+					
+					if (currUser != null) {
+						currUser.updateSongPlays();
+					}
 					
 					System.out.println("Added the following album: ");
 					System.out.println(a);
@@ -584,6 +590,7 @@ public class MusicSim {
 				if (s.getAlbum()[0].equals(aTitle)) {
 					s.setRating(r);
 					library.topSongsPlaylist();
+					library.favSongsPlaylist();
 
 					System.out.println("Rated the following song: ");
 					System.out.println(s);
@@ -657,7 +664,7 @@ public class MusicSim {
 	}
 	
 	public void login() {
-		if (currUser.getUsername().equals("guest")) {
+		if (currUser == null) {
 			System.out.print("Enter a username: ");
 			String username = scanner.nextLine().trim();
 			System.out.print("Enter a password: ");
@@ -677,14 +684,14 @@ public class MusicSim {
 	}
 	
 	public void logout() {
-		if (!currUser.getUsername().equals("guest")) {
-			currUser = ud.getUser("guest", "guestpass");
-			library = new LibraryModel();
-			System.out.println("Logout successful.\n");
-		} else {
-			System.out.println("You're already logged out.\n");
-		}
-	}
+ 		if (currUser != null) {
+ 			currUser = null;
+ 			library = new LibraryModel();
+ 			System.out.println("Logout successful.\n");
+ 		} else {
+ 			System.out.println("You're already logged out.\n");
+ 		}
+ 	}
 
 	private Rate intToRate(int rate) {
 		if (rate == 1) {
