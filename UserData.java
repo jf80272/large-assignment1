@@ -77,4 +77,13 @@ public class UserData {
 		
 		return null;
 	}
+
+	// Clears users.txt for you
+	public void deleteData() {
+		try {
+			FileWriter getFile = new FileWriter("src/database/users.txt", false);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
