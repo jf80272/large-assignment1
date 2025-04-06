@@ -559,7 +559,7 @@ public class MusicSim {
 		if (!songs.isEmpty()) {
 			for (Song s : songs) {
 				if (s.getAlbum()[0].equals(aTitle)) {
-					s.setFav(true);
+					library.setFav(s);
 					System.out.println("Marked the following song as favorite: ");
 					System.out.println(s);
 					System.out.println();
