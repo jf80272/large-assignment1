@@ -588,10 +588,7 @@ public class MusicSim {
 			}
 			for (Song s : songs) {
 				if (s.getAlbum()[0].equals(aTitle)) {
-					s.setRating(r);
-					library.topSongsPlaylist();
-					library.favSongsPlaylist();
-
+					library.rateSong(s, r);
 					System.out.println("Rated the following song: ");
 					System.out.println(s);
 					System.out.println();
