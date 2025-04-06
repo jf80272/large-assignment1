@@ -693,6 +693,10 @@ public class MusicSim {
  		}
  	}
 
+	public void endProgram() {
+		ud.deleteData();
+	}
+
 	private Rate intToRate(int rate) {
 		if (rate == 1) {
 			return Rate.ONE;
