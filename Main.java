@@ -96,6 +96,7 @@ public class Main {
 				ms.logout();
 				break;
 			case "21":
+			    	ms.endProgram();
 				active = false;
 				System.out.println("Program closed");
 				break;
