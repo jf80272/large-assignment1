@@ -93,10 +93,27 @@ public class User {
 				songPlays.put(songPlayed, plays+1);
 				
 				// Update recentPlays
+				// Check if recentPlays contains the played song
+				boolean hasPlayedSong = false;
+				int playedSongIndex = -1;
+				
+				for (int i = 0; i < 10; i++) {
+					if (recentPlays[i] != null && recentPlays[i].equals(songPlayed)) {
+						hasPlayedSong = true;
+						playedSongIndex = i;
+					}
+				}
+				
 				// Shift elements of recentPlays to make room for songPlayed
 				if (recentPlays[0] == null) {
 					recentPlays[0] = songPlayed;
 				} else if (!recentPlays[0].equals(songPlayed)) {
+					if (hasPlayedSong) {
+						for (int i = 8; i >= playedSongIndex; i--) {
+							recentPlays[i] = recentPlays[i + 1];
+						}
+						recentPlays[9] = null;
+					}
 					System.arraycopy(recentPlays, 0, recentPlays, 1, 9);
 					recentPlays[0] = songPlayed;
 				}
@@ -108,6 +125,7 @@ public class User {
 				for (int i = 9; i >= 0; i--) {
 					if (mostPlays[i] != null) {
 						lastMostPlaysIndex = i;
+						break;
 					}
 				}
 				
@@ -115,24 +133,67 @@ public class User {
 						// Compare num of plays of most recently played song with that of last song in mostPlays
 						int lastMostPlays = songPlays.get(mostPlays[lastMostPlaysIndex]);
 						int songPlayedPlays = songPlays.get(songPlayed);
+						boolean hasPlayedSong2 = false;
+						int playedSongIndex2 = -1;
 						
+						for (int i = 0; i < 10; i++) {
+							if (mostPlays[i] != null && mostPlays[i].equals(songPlayed)) {
+								hasPlayedSong2 = true;
+								playedSongIndex2 = i;
+							}
+						}
 						
-						if (lastMostPlays <= songPlayedPlays) {
-							if (lastMostPlaysIndex != 9) {
+						if (!hasPlayedSong2) {
+							if (lastMostPlays <= songPlayedPlays) {
+								if (lastMostPlaysIndex != 9) {
+									System.out.println("index: " + lastMostPlaysIndex + "\n");	// TEST!!!
+									
+									System.arraycopy(mostPlays, lastMostPlaysIndex, mostPlays, lastMostPlaysIndex + 1, 9 - lastMostPlaysIndex);
+									// mostPlays[lastMostPlaysIndex + 1] = mostPlays[lastMostPlaysIndex];
+									mostPlays[lastMostPlaysIndex] = songPlayed;
+								} else {
+									mostPlays[lastMostPlaysIndex] = songPlayed;
+								}
+							} else if (lastMostPlaysIndex != 9) {
 								mostPlays[lastMostPlaysIndex + 1] = songPlayed;
-							} else {
-								mostPlays[lastMostPlaysIndex] = songPlayed;
+							}
+						} else {
+							int prevMostPlays = songPlays.get(mostPlays[playedSongIndex2 - 1]);
+							if (prevMostPlays <= songPlayedPlays) {
+								mostPlays[playedSongIndex2] = mostPlays[playedSongIndex2 - 1];
+								mostPlays[playedSongIndex2 - 1] = songPlayed;
 							}
 						}
 				} else {
 					// If lastMostPlaysIndex is still -1, no values have been initialized yet
 					mostPlays[0] = songPlayed;
 				}
+				for (Song s: mostPlays) { // TEST!!!
+					System.out.print(s + ", ");
+				}
 				
 				return true;	
 			}
 		}
 		return false;
+	}
+	
+	// Update recent plays list
+	private void updateRecentPlays(Song songPlayed) {
+		System.arraycopy(recentPlays, 0, recentPlays, 1, 9);
+        recentPlays[0] = songPlayed;
+	}
+	
+	// Update most plays list
+	private void updateMostPlays(Song songPlayed) {
+		int playCount = songPlays.get(songPlayed);
+        for (int i = 0; i < mostPlays.length; i++) {
+            if (mostPlays[i] == null || songPlays.get(mostPlays[i]) <= playCount) {
+                System.arraycopy(mostPlays, i, mostPlays, i + 1, 9 - i);
+                mostPlays[i] = songPlayed;
+                break;
+            }
+        }
 	}
 	
 	public String getUsername() {
@@ -146,7 +207,7 @@ public class User {
 	public Song[] getRecentPlays() {
 		Song[] returnArr = new Song[10];
 		int i = 0;
-		while (recentPlays[i] != null && i < 10) {
+		while (i < 10 && recentPlays[i] != null) {
 			returnArr[i] = new Song(recentPlays[i].getTitle(), recentPlays[i].getArtist(), recentPlays[i].getAlbum());
 			i++;
 		}
@@ -157,7 +218,7 @@ public class User {
 	public Song[] getMostPlays() {
 		Song[] returnArr = new Song[10];
 		int i = 0;
-		while (mostPlays[i] != null && i < 10) {
+		while (i < 10 && mostPlays[i] != null) {
 			returnArr[i] = new Song(mostPlays[i].getTitle(), mostPlays[i].getArtist(), mostPlays[i].getAlbum());
 			i++;
 		}
